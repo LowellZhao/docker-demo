@@ -1,0 +1,23 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /
+
+logging:
+  config: classpath:log/log4j2.xml
+
+spring:
+  application:
+    name: docker-demo
+  cloud:
+    consul:
+      discovery:
+        prefer-ip-address: true
+        instance-group: blue
+        service-name: ${spring.application.name}
+        instance-id: ${spring.application.name}-${spring.cloud.consul.discovery.instance-group}-${spring.cloud.client.hostname}-${server.port}
+        health-check-critical-timeout: 1200s
+        ip-address: ${spring.cloud.client.hostname}
+        health-check-url: http://${spring.cloud.client.ipaddress}:${server.port}/${server.servlet.context-path}/actuator/info
+      host: 192.168.127.120
+      port: 8500
